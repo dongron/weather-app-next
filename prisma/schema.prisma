@@ -6,15 +6,23 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider = "postgres"
+  url      = env("POSTGRES_URL_NON_POOLING")
 }
 
-model users {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  image     String
-  createdAt DateTime @default(now())
+model City {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  lat         Float?
+  lon         Float?
+  weatherList Weather[]
+}
+
+model Weather {
+  id          Int       @id @default(autoincrement())
+  value       Float
+  city        City?     @relation(fields: [cityId], references: [id])
+  cityId      Int?
+  lastUpdated String
+  createdAt   DateTime? @default(now())
 }
